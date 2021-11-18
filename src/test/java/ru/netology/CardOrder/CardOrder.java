@@ -19,7 +19,7 @@ public class CardOrder {
     void setUp() {
         open("http://localhost:9999");
         LocalDate dateNow = LocalDate.now();
-        LocalDate datePlus3 = dateNow.plusDays(3);
+        LocalDate datePlus3 = dateNow.plusDays(4);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         date = datePlus3.format(format);
     }
