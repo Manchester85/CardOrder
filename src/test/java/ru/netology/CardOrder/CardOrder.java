@@ -13,15 +13,12 @@ import static com.codeborne.selenide.Selenide.*;
 
 
 public class CardOrder {
-    private String date;
-
+    private String date(int days){
+return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+}
     @BeforeEach
     void setUp() {
         open("http://localhost:9999");
-        LocalDate dateNow = LocalDate.now();
-        LocalDate datePlus3 = dateNow.plusDays(3);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        date = datePlus3.format(format);
     }
 
     @Test
@@ -29,13 +26,14 @@ public class CardOrder {
 
         SelenideElement form = $("[action]");
         form.$("[data-test-id = city] input").setValue("Москва");
-        form.$("[data-test-id=date] input").setValue(date);
+        String futureDate = date(3);
+        form.$("[data-test-id=date] input").setValue(futureDate);
         form.$("[data-test-id=name] input").setValue("Иван Петров");
         form.$("[data-test-id=phone] input").setValue("+79125345678");
         form.$("[data-test-id=agreement] .checkbox__box").click();
         $$("button").find(Condition.exactText("Забронировать")).click();
         $(withText("Успешно!")).shouldBe(visible, Duration.ofSeconds(15));
-        $(".notification__content").shouldHave(Condition.exactText("Встреча успешно забронирована на " + date));
+        $(".notification__content").shouldBe(visible, Duration.ofSeconds(15)).shouldHave(Condition.exactText("Встреча успешно забронирована на " + futureDate));
     }
 }
 
